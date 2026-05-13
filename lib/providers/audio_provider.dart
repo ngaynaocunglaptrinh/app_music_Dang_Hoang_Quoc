@@ -29,7 +29,6 @@ class AudioProvider extends ChangeNotifier {
     if (_currentIndex < 0 || _currentIndex >= _songs.length) {
       return null;
     }
-
     return _songs[_currentIndex];
   }
   Stream<Duration> get positionStream => _audioService.positionStream;
@@ -40,10 +39,8 @@ class AudioProvider extends ChangeNotifier {
     _shuffleEnabled = await _storageService.getShuffle();
     _repeatMode = await _storageService.getRepeatMode();
     _volume = await _storageService.getVolume();
-
     await _audioService.setVolume(_volume);
     await _applyRepeatMode();
-
     notifyListeners();
   }
 
@@ -71,10 +68,8 @@ class AudioProvider extends ChangeNotifier {
 
     _currentIndex = index;
     final song = _songs[index];
-
     await _audioService.loadAudio(song.filePath);
     await _audioService.play();
-
     notifyListeners();
   }
 
@@ -90,7 +85,6 @@ class AudioProvider extends ChangeNotifier {
     } else {
       await _audioService.play();
     }
-
     notifyListeners();
   }
 
@@ -107,7 +101,6 @@ class AudioProvider extends ChangeNotifier {
     }
 
     int nextIndex = _currentIndex + 1;
-
     if (nextIndex >= _songs.length) {
       if (_repeatMode == 'all') {
         nextIndex = 0;
@@ -160,7 +153,6 @@ class AudioProvider extends ChangeNotifier {
 
     await _storageService.saveRepeatMode(_repeatMode);
     await _applyRepeatMode();
-
     notifyListeners();
   }
 
