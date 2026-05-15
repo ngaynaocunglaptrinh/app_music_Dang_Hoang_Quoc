@@ -3,10 +3,13 @@ import '../models/playback_state_model.dart';
 
 class AudioPlayerService {
   final AudioPlayer player = AudioPlayer();
+
   Stream<Duration> get positionStream => player.positionStream;
   Stream<Duration?> get durationStream => player.durationStream;
   Stream<bool> get playingStream => player.playingStream;
-  Stream<ProcessingState> get processingStateStream => player.processingStateStream;
+  Stream<ProcessingState> get processingStateStream =>
+      player.processingStateStream;
+
   bool get isPlaying => player.playing;
   Duration get currentPosition => player.position;
 
@@ -20,8 +23,13 @@ class AudioPlayerService {
     }
   }
 
-  Future<void> loadAudio(String filePath) async {
-    await player.setFilePath(filePath);
+  Future<void> loadAudio(String assetPath) async {
+    try {
+      await player.stop();
+      await player.setAsset(assetPath);
+    } catch (e) {
+      throw Exception('Không thể load file nhạc: $assetPath. Lỗi: $e');
+    }
   }
 
   Future<void> play() async {
@@ -47,6 +55,7 @@ class AudioPlayerService {
   Future<void> setLoopMode(LoopMode loopMode) async {
     await player.setLoopMode(loopMode);
   }
+
   void dispose() {
     player.dispose();
   }

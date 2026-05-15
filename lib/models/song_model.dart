@@ -1,32 +1,19 @@
-import 'package:on_audio_query/on_audio_query.dart';
-
 class AppSong {
   final int id;
   final String title;
   final String artist;
-  final String? album;
-  final String filePath;
+  final String album;
+  final String assetPath;
   final int duration;
 
   AppSong({
     required this.id,
     required this.title,
     required this.artist,
-    this.album,
-    required this.filePath,
-    required this.duration,
+    required this.album,
+    required this.assetPath,
+    this.duration = 0,
   });
-
-  factory AppSong.fromAudioQuery(SongModel song) {
-    return AppSong(
-      id: song.id,
-      title: song.title,
-      artist: song.artist ?? 'Unknown Artist',
-      album: song.album,
-      filePath: song.data,
-      duration: song.duration ?? 0,
-    );
-  }
 
   factory AppSong.fromJson(Map<String, dynamic> json) {
     return AppSong(
@@ -34,8 +21,8 @@ class AppSong {
       title: json['title'],
       artist: json['artist'],
       album: json['album'],
-      filePath: json['filePath'],
-      duration: json['duration'],
+      assetPath: json['assetPath'],
+      duration: json['duration'] ?? 0,
     );
   }
 
@@ -45,7 +32,7 @@ class AppSong {
       'title': title,
       'artist': artist,
       'album': album,
-      'filePath': filePath,
+      'assetPath': assetPath,
       'duration': duration,
     };
   }

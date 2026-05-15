@@ -68,7 +68,8 @@ class AudioProvider extends ChangeNotifier {
 
     _currentIndex = index;
     final song = _songs[index];
-    await _audioService.loadAudio(song.filePath);
+    await _audioService.loadAudio(song.assetPath);
+    // await _audioService.loadAudio(song.filePath);
     await _audioService.play();
     notifyListeners();
   }
