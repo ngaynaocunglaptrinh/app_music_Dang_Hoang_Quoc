@@ -1,33 +1,27 @@
 import 'dart:io';
+import 'package:on_audio_query/on_audio_query.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionService {
+  final OnAudioQuery _audioQuery = OnAudioQuery();
+
   Future<bool> requestAudioPermission() async {
-    if (!Platform.isAndroid) {
-      return true;
-    }
-    final audioStatus = await Permission.audio.request();
+    if (!Platform.isAndroid) return true;
 
-    if (audioStatus.isGranted) {
-      return true;
-    }
-    final storageStatus = await Permission.storage.request();
+    // on_audio_query tự xử lý READ_MEDIA_AUDIO cho Android 13+
+    // và READ_EXTERNAL_STORAGE cho Android cũ.
+    final hasPermission = await _audioQuery.permissionsStatus();
+    if (hasPermission) return true;
 
-    if (storageStatus.isGranted) {
-      return true;
-    }
-    if (audioStatus.isPermanentlyDenied || storageStatus.isPermanentlyDenied) {
-      await openAppSettings();
-    }
-    return false;
+    return _audioQuery.permissionsRequest();
   }
 
   Future<bool> hasAudioPermission() async {
-    if (!Platform.isAndroid) {
-      return true;
-    }
-    final audioStatus = await Permission.audio.status;
-    final storageStatus = await Permission.storage.status;
-    return audioStatus.isGranted || storageStatus.isGranted;
+    if (!Platform.isAndroid) return true;
+    return _audioQuery.permissionsStatus();
+  }
+
+  Future<void> openSettings() async {
+    await openAppSettings();
   }
 }

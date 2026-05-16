@@ -8,19 +8,21 @@ class SongTile extends StatelessWidget {
   final AppSong song;
   final VoidCallback onTap;
   final VoidCallback? onMoreTap;
+  final Widget? trailingExtra;
 
   const SongTile({
     super.key,
     required this.song,
     required this.onTap,
     this.onMoreTap,
+    this.trailingExtra,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      leading: AlbumArt(songId: song.id),
+      leading: AlbumArt(songId: song.id, isAsset: song.isAsset),
       title: Text(
         song.title,
         maxLines: 1,
@@ -31,12 +33,12 @@ class SongTile extends StatelessWidget {
         ),
       ),
       subtitle: Text(
-        song.artist,
+        '${song.artist} • ${song.album}',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(color: AppColors.textGrey),
       ),
-      trailing: Row(
+      trailing: trailingExtra ?? Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/audio_provider.dart';
 import '../providers/playlist_provider.dart';
 import '../utils/constants.dart';
 import '../widgets/playlist_card.dart';
+import 'playlist_detail_screen.dart';
 
 class PlaylistScreen extends StatelessWidget {
   const PlaylistScreen({super.key});
@@ -15,12 +17,10 @@ class PlaylistScreen extends StatelessWidget {
       builder: (context) {
         return AlertDialog(
           backgroundColor: AppColors.card,
-          title: const Text(
-            'Tạo playlist',
-            style: TextStyle(color: Colors.white),
-          ),
+          title: const Text('Tạo playlist', style: TextStyle(color: Colors.white)),
           content: TextField(
             controller: controller,
+            autofocus: true,
             style: const TextStyle(color: Colors.white),
             decoration: const InputDecoration(
               hintText: 'Nhập tên playlist',
@@ -28,23 +28,13 @@ class PlaylistScreen extends StatelessWidget {
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Hủy'),
-            ),
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Hủy')),
             ElevatedButton(
               onPressed: () async {
                 final name = controller.text.trim();
-
-                if (name.isEmpty) {
-                  return;
-                }
-
+                if (name.isEmpty) return;
                 await context.read<PlaylistProvider>().createPlaylist(name);
-
-                if (context.mounted) {
-                  Navigator.pop(context);
-                }
+                if (context.mounted) Navigator.pop(context);
               },
               child: const Text('Tạo'),
             ),
@@ -56,8 +46,8 @@ class PlaylistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PlaylistProvider>(
-      builder: (context, provider, child) {
+    return Consumer2<PlaylistProvider, AudioProvider>(
+      builder: (context, playlistProvider, audioProvider, child) {
         return Column(
           children: [
             Padding(
@@ -76,32 +66,29 @@ class PlaylistScreen extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: provider.playlists.isEmpty
+              child: playlistProvider.playlists.isEmpty
                   ? const Center(
-                child: Text(
-                  'Chưa có playlist nào',
-                  style: TextStyle(color: Colors.grey),
-                ),
+                child: Text('Chưa có playlist nào', style: TextStyle(color: Colors.grey)),
               )
                   : ListView.builder(
-                itemCount: provider.playlists.length,
+                itemCount: playlistProvider.playlists.length,
                 itemBuilder: (context, index) {
-                  final playlist = provider.playlists[index];
+                  final playlist = playlistProvider.playlists[index];
 
                   return PlaylistCard(
                     playlist: playlist,
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Bản cơ bản đã lưu playlist. Có thể mở rộng màn hình chi tiết playlist sau.',
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PlaylistDetailScreen(
+                            playlist: playlist,
+                            allSongs: audioProvider.songs,
                           ),
                         ),
                       );
                     },
-                    onDelete: () {
-                      provider.deletePlaylist(playlist.id);
-                    },
+                    onDelete: () => playlistProvider.deletePlaylist(playlist.id),
                   );
                 },
               ),

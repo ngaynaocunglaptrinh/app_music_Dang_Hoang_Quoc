@@ -32,6 +32,19 @@ class PlaylistProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> renamePlaylist(String id, String newName) async {
+    final index = _playlists.indexWhere((playlist) => playlist.id == id);
+    if (index == -1 || newName.trim().isEmpty) return;
+
+    _playlists[index] = _playlists[index].copyWith(
+      name: newName.trim(),
+      updatedAt: DateTime.now(),
+    );
+
+    await _storageService.savePlaylists(_playlists);
+    notifyListeners();
+  }
+
   Future<void> deletePlaylist(String id) async {
     _playlists.removeWhere((playlist) => playlist.id == id);
     await _storageService.savePlaylists(_playlists);
@@ -40,19 +53,13 @@ class PlaylistProvider extends ChangeNotifier {
 
   Future<void> addSongToPlaylist(String playlistId, AppSong song) async {
     final index = _playlists.indexWhere((playlist) => playlist.id == playlistId);
-
-    if (index == -1) {
-      return;
-    }
+    if (index == -1) return;
 
     final playlist = _playlists[index];
-    if (playlist.songIds.contains(song.id)) {
-      return;
-    }
+    if (playlist.songIds.contains(song.id)) return;
 
-    final updatedIds = [...playlist.songIds, song.id];
     _playlists[index] = playlist.copyWith(
-      songIds: updatedIds,
+      songIds: [...playlist.songIds, song.id],
       updatedAt: DateTime.now(),
     );
 
@@ -62,16 +69,29 @@ class PlaylistProvider extends ChangeNotifier {
 
   Future<void> removeSongFromPlaylist(String playlistId, int songId) async {
     final index = _playlists.indexWhere((playlist) => playlist.id == playlistId);
-
-    if (index == -1) {
-      return;
-    }
+    if (index == -1) return;
 
     final playlist = _playlists[index];
-    final updatedIds = playlist.songIds.where((id) => id != songId).toList();
-
     _playlists[index] = playlist.copyWith(
-      songIds: updatedIds,
+      songIds: playlist.songIds.where((id) => id != songId).toList(),
+      updatedAt: DateTime.now(),
+    );
+
+    await _storageService.savePlaylists(_playlists);
+    notifyListeners();
+  }
+
+  Future<void> reorderSong(String playlistId, int oldIndex, int newIndex) async {
+    final index = _playlists.indexWhere((playlist) => playlist.id == playlistId);
+    if (index == -1) return;
+
+    final ids = [..._playlists[index].songIds];
+    if (newIndex > oldIndex) newIndex -= 1;
+    final item = ids.removeAt(oldIndex);
+    ids.insert(newIndex, item);
+
+    _playlists[index] = _playlists[index].copyWith(
+      songIds: ids,
       updatedAt: DateTime.now(),
     );
 

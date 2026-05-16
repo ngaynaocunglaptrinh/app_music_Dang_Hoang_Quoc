@@ -8,14 +8,8 @@ class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   String _repeatText(String mode) {
-    if (mode == 'all') {
-      return 'Lặp tất cả';
-    }
-
-    if (mode == 'one') {
-      return 'Lặp một bài';
-    }
-
+    if (mode == 'all') return 'Lặp tất cả';
+    if (mode == 'one') return 'Lặp một bài';
     return 'Không lặp';
   }
 
@@ -31,17 +25,9 @@ class SettingsScreen extends StatelessWidget {
               child: SwitchListTile(
                 value: themeProvider.isDarkMode,
                 activeColor: AppColors.primary,
-                title: const Text(
-                  'Dark Mode',
-                  style: TextStyle(color: Colors.white),
-                ),
-                subtitle: const Text(
-                  'Bật/tắt giao diện tối',
-                  style: TextStyle(color: Colors.grey),
-                ),
-                onChanged: (_) {
-                  themeProvider.toggleTheme();
-                },
+                title: const Text('Dark Mode', style: TextStyle(color: Colors.white)),
+                subtitle: const Text('Bật/tắt giao diện tối', style: TextStyle(color: Colors.grey)),
+                onChanged: (_) => themeProvider.toggleTheme(),
               ),
             ),
             Card(
@@ -49,30 +35,16 @@ class SettingsScreen extends StatelessWidget {
               child: SwitchListTile(
                 value: audioProvider.shuffleEnabled,
                 activeColor: AppColors.primary,
-                title: const Text(
-                  'Shuffle',
-                  style: TextStyle(color: Colors.white),
-                ),
-                subtitle: const Text(
-                  'Phát ngẫu nhiên',
-                  style: TextStyle(color: Colors.grey),
-                ),
-                onChanged: (_) {
-                  audioProvider.toggleShuffle();
-                },
+                title: const Text('Shuffle', style: TextStyle(color: Colors.white)),
+                subtitle: const Text('Phát ngẫu nhiên', style: TextStyle(color: Colors.grey)),
+                onChanged: (_) => audioProvider.toggleShuffle(),
               ),
             ),
             Card(
               color: AppColors.card,
               child: ListTile(
-                title: const Text(
-                  'Repeat Mode',
-                  style: TextStyle(color: Colors.white),
-                ),
-                subtitle: Text(
-                  _repeatText(audioProvider.repeatMode),
-                  style: const TextStyle(color: Colors.grey),
-                ),
+                title: const Text('Repeat Mode', style: TextStyle(color: Colors.white)),
+                subtitle: Text(_repeatText(audioProvider.repeatMode), style: const TextStyle(color: Colors.grey)),
                 trailing: const Icon(Icons.repeat, color: Colors.white),
                 onTap: audioProvider.toggleRepeatMode,
               ),
@@ -84,10 +56,7 @@ class SettingsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Âm lượng',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    const Text('Âm lượng', style: TextStyle(color: Colors.white)),
                     Slider(
                       value: audioProvider.volume,
                       min: 0,
@@ -99,9 +68,30 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
             ),
+            Card(
+              color: AppColors.card,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Tốc độ phát', style: TextStyle(color: Colors.white)),
+                    Slider(
+                      value: audioProvider.speed,
+                      min: 0.5,
+                      max: 2.0,
+                      divisions: 6,
+                      label: '${audioProvider.speed.toStringAsFixed(1)}x',
+                      activeColor: AppColors.primary,
+                      onChanged: audioProvider.changeSpeed,
+                    ),
+                  ],
+                ),
+              ),
+            ),
             const SizedBox(height: 24),
             const Text(
-              'Offline Music Player\nFlutter project demo',
+              'Offline Music Player\nCó đọc nhạc thiết bị, playlist, search, filter, sort, mini player, now playing, shuffle/repeat, lưu trạng thái phát.',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.grey),
             ),
