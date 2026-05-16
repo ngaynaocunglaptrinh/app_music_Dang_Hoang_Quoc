@@ -5,6 +5,8 @@
 
 <img width="1914" height="295" alt="image" src="https://github.com/user-attachments/assets/1abce958-015c-4d6a-8c83-0ed9a4a4cd5a" />
 
+<img width="1918" height="1079" alt="image" src="https://github.com/user-attachments/assets/8238c03b-0eaa-4c51-a8e0-a9facc3540c6" />
+
 Ảnh một số màn hình:
 Màn hình tiềm kiếm
 <img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/07e873ba-0584-4e43-8d9f-d339e2f3f39c" />
